@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 def getImdbFilms():
     imdburl = "https://www.imdb.com/chart/top/"
-    header={"accept-language":"tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7"}
+    header={"accept-language":"en-US,en;q=0.9,hi;q=0.8"}
     r=requests.get(imdburl,headers=header)
 
     soup = BeautifulSoup(r.content,"html.parser")
