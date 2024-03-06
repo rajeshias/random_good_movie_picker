@@ -2,6 +2,7 @@ import random
 import requests
 import json
 from bs4 import BeautifulSoup
+from pprint import pprint
 
 def getImdbFilms():
     imdburl = "https://www.imdb.com/chart/top/"
@@ -10,6 +11,7 @@ def getImdbFilms():
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
     'cache-control': 'max-age=0',
+    # 'cookie': 'session-id-time=2082787201l; session-id=135-0705048-9484236; ubid-main=133-8806051-1324352; uu=eyJpZCI6InV1Y2Y1NWI5MGY3OGQxNGRmZmJkOGQiLCJwcmVmZXJlbmNlcyI6eyJmaW5kX2luY2x1ZGVfYWR1bHQiOmZhbHNlfX0=; session-token=ozSIsIJ8AE833+CCghVPuOnDJaNracIeWCSPqhpMhm4n9qFZ2rfMy8nCyU8FgKaCBVXpe9+qLylkxbxBRjnD2+Ymucce8HuQBinghEmoG4RfN+kP0hyAWVmanu1G9pOPvTphQ1WD2NaBO9Hb3pCV49C8fPDY05CEmcPuAXp0Szx4aMPUSaA1wRNDuqFhIt1T6w5oRCaLKUch0eWa0QGy1ecmU0cZpz9VLoK/tkwdR1MkMGAnaOVm3e8E09p0WJ7sISy/b9zTVhjnwsrJX3DEiIRiIh9wpmpjlLwPuuXmE210GO31MI5OBzYyDjnw79EA2vzeBJrBQ7glVkvvqLybWlboeXxZgEqf; csm-hit=tb:ES1MKHCEA8B91HBZHJ8C+s-ES1MKHCEA8B91HBZHJ8C|1709689788520&t:1709689788520&adb:adblk_yes; ad-oo=0; ci=e30',
     'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"macOS"',
@@ -23,19 +25,16 @@ def getImdbFilms():
     r=requests.get(imdburl,headers=headers)
 
     soup = BeautifulSoup(r.content,"html.parser")
-    get_data=soup.find_all("div",{"class":"srahg"})
-    film_table = (get_data[0].contents)[len(get_data[0].contents)-2]
-    film_table = film_table.find_all("tr")
+    film_list=soup.find_all("div",{"class":"srahg"})
     # f = open("C:/Users/hupes/Desktop/IMDBTOP250","w")
 
     imdbFilms = []
-    for film in film_table:
+    for film in film_list:
         # filmbasliklar = film.find_all("td",{"class":"titleColumn"})
-        film_name=film.find_all("a")[1].text
+        film_name=film.text
         # film_name=filmbasliklar[0].tex
         # film_name=film_name.replace("\n","")
-        imdbFilms.append(film_name)
-
+        imdbFilms.append(f"imdb#{film_name}")
     return imdbFilms
 
 
@@ -70,6 +69,7 @@ def get_movie(number):
 
     movies = [i['film']['title'] + f"({str(i['film']['year'])})" for i in json.loads(start.content)['list_films']]
     movies.extend(getImdbFilms())
+    print(len(movies))
     return movies
 
 # create a json file that holds a list of watched movies and add the movie to the list after user confirms as watched 
