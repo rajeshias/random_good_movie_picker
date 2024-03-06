@@ -5,19 +5,32 @@ from bs4 import BeautifulSoup
 
 def getImdbFilms():
     imdburl = "https://www.imdb.com/chart/top/"
-    header={"accept-language":"en-US,en;q=0.9,hi;q=0.8"}
-    r=requests.get(imdburl,headers=header)
+    headers = {
+    'authority': 'www.imdb.com',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+    'cache-control': 'max-age=0',
+    'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'document',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'same-origin',
+    'sec-fetch-user': '?1',
+    'upgrade-insecure-requests': '1',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+}
+    r=requests.get(imdburl,headers=headers)
 
     soup = BeautifulSoup(r.content,"html.parser")
-
-    get_data=soup.find_all("table",{"class":"chart full-width"})
+    get_data=soup.find_all("div",{"class":"srahg"})
     film_table = (get_data[0].contents)[len(get_data[0].contents)-2]
     film_table = film_table.find_all("tr")
     # f = open("C:/Users/hupes/Desktop/IMDBTOP250","w")
 
     imdbFilms = []
     for film in film_table:
-        filmbasliklar = film.find_all("td",{"class":"titleColumn"})
+        # filmbasliklar = film.find_all("td",{"class":"titleColumn"})
         film_name=film.find_all("a")[1].text
         # film_name=filmbasliklar[0].tex
         # film_name=film_name.replace("\n","")
